@@ -19,6 +19,8 @@ except:
 
 # Initialize the camera
 cam = cv2.VideoCapture(int(settings["cam_id"]))
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)  # Set width to 1280
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 def cleanup():
     print("Releasing cam")
@@ -35,10 +37,4 @@ def continouscam(sleep_seconds):
             print("Failed to capture image")
         ##sleep for given amount
         time.sleep(sleep_seconds)
-continouscam(0.2)
-html_serv_thread = threading.Thread(target=tools.launch_html_server("./",4220, verbose=False))
-##continouscam_thread = threading.Thread(continouscam(0.2))
-
-##continouscam_thread.start()
-html_serv_thread.start()
-
+continouscam(0.1)

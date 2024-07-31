@@ -1,0 +1,1 @@
+#this script is supposed to set up the environment for the camera capture

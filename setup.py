@@ -10,13 +10,17 @@ def main():
     obj = {}
     eval1()
     obj["cam_id"] = eval2()
-    print(obj)
-    
+    obj["constant_update_freq"] = eval3()
+    obj["burst_fps"] = eval4()
 
     try:
         os.remove(settings_dir) #remove previous config
     except:
-        print("cannot remove clear settings dir")
+        print("Settings file missing")
+    tools.write_json(settings_dir, obj)
+    print("Data written to settings file")
+    exit()
+
 
 
 
@@ -55,18 +59,37 @@ def eval2():
         return ids
     else:
         eval2()
+
+def eval3():
+    update_freq = question("Enter constant frames pr hour: ") 
+    try:
+       update_freq = float(update_freq)
+       return update_freq
+    except:
+        eval3()
+
+
+def eval4():
+    update_freq = question("Enter burst fps ") 
+    try:
+       update_freq = float(update_freq)
+       return update_freq
+    except:
+        eval4()
     
 
         
     
 
 def get_camera():
-    result = subprocess.run(['v4l2-ctl', '--list-devices'], capture_output=True, text=True)
-    lines = result.stdout.split('\n')
-    
+    try:
+        result = subprocess.run(['v4l2-ctl', '--list-devices'], capture_output=True, text=True)
+    except:
+        print("Failed to run v4l2-ctl', '--list-devices!. Have you installed v4l2-ctl?")
+        
+    lines = result.stdout.split('\n')    
     webcams = {}
-    current_camera = None
-    
+    current_camera = None 
     for line in lines:
         if ':' in line and '/dev/video' not in line:
             current_camera = line.split(':')[0].strip()
@@ -74,10 +97,8 @@ def get_camera():
         else:
             match = re.search(r'/dev/video(\d+)', line)
             if match and current_camera is not None:
-                webcams[current_camera].append(int(match.group(1)))
-    
-    webcams = {k: v for k, v in webcams.items() if v}
-    
+                webcams[current_camera].append(int(match.group(1)))    
+    webcams = {k: v for k, v in webcams.items() if v}    
     return webcams
     
 

@@ -254,10 +254,16 @@ def write_json(file_path, data):
         print(f"Error: Unable to write to {file_path}. {str(e)}")
         raise
 
-def launch_html_server(directory,port):
+def launch_html_server(directory, port, verbose=True):
     class Handler(http.server.SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=directory, **kwargs)
+        
+        def log_message(self, format, *args):
+            if verbose:
+                super().log_message(format, *args)
+
     with socketserver.TCPServer(("", port), Handler) as httpd:
-        print(f"Serving at port {port}")
+        if verbose:
+            print(f"Serving at port {port}")
         httpd.serve_forever()

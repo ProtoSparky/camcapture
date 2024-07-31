@@ -8,6 +8,7 @@ import http.server
 import socketserver
 import threading
 import time
+import atexit
 
 
 try:
@@ -16,26 +17,28 @@ except:
     print("Settings file missing! Run setup.py")
     exit()
 
-html_serv_thread = threading.Thread(target=tools.launch_html_server("./",4220))
-html_serv_thread.start()
-
 # Initialize the camera
 cam = cv2.VideoCapture(int(settings["cam_id"]))
 
+def cleanup():
+    print("Releasing cam")
+    cam.release()
+atexit.register(cleanup)
 
+def continouscam(sleep_seconds):
+    print("capturing")
+    while True:
+        ret, frame = cam.read()
+        if ret:
+            cv2.imwrite(static_img, frame)
+        else:
+            print("Failed to capture image")
+        ##sleep for given amount
+        time.sleep(sleep_seconds)
+continouscam(0.2)
+html_serv_thread = threading.Thread(target=tools.launch_html_server("./",4220, verbose=False))
+##continouscam_thread = threading.Thread(continouscam(0.2))
 
-
-
-# Capture a single frame
-ret, frame = cam.read()
-
-if ret:
-    # Save the captured frame as an image
-    cv2.imwrite(static_img, frame)
-else:
-    print("Failed to capture image")
-
-# Release the camera
-cam.release()
-
+##continouscam_thread.start()
+html_serv_thread.start()
 

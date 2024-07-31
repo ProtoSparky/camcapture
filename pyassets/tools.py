@@ -3,6 +3,7 @@ import re
 import csv
 import os
 from datetime import datetime
+import json
 def Ask(question, type = ["num","str","num_and_str", "pass", "num_and_str_special", "dec", "str_allowed"], error_msg = "Input wrong", allowed_strings = []):
     temp_var = input(question)
     if(type == "num"):
@@ -224,4 +225,32 @@ def sort_dict(object_input, ascending=True):
     sorted_items = sorted(object_input.items(), key=lambda x: x[1], reverse=not ascending)    
     sorted_dict = {k: v for k, v in sorted_items}    
     return sorted_dict
+
+
+
+
+def open_json(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+        return data
+    except FileNotFoundError:
+        print(f"Error: The file {file_path} was not found.")
+        raise
+    except json.JSONDecodeError:
+        print(f"Error: The file {file_path} is not valid JSON.")
+        raise
+
+def write_json(file_path, data):
+    try:        
+        
+        # Write the data to the JSON file
+        with open(file_path, 'w') as file:
+            json.dump(data, file, indent=4)
+        
+        print(f"JSON file successfully written to {file_path}")
+        return file_path
+    except OSError as e:
+        print(f"Error: Unable to write to {file_path}. {str(e)}")
+        raise
 

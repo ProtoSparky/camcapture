@@ -4,6 +4,8 @@ import csv
 import os
 from datetime import datetime
 import json
+import http.server  
+import socketserver
 def Ask(question, type = ["num","str","num_and_str", "pass", "num_and_str_special", "dec", "str_allowed"], error_msg = "Input wrong", allowed_strings = []):
     temp_var = input(question)
     if(type == "num"):
@@ -247,10 +249,15 @@ def write_json(file_path, data):
         # Write the data to the JSON file
         with open(file_path, 'w') as file:
             json.dump(data, file, indent=4)
-        
-        print(f"JSON file successfully written to {file_path}")
         return file_path
     except OSError as e:
         print(f"Error: Unable to write to {file_path}. {str(e)}")
         raise
 
+def launch_html_server(directory,port):
+    class Handler(http.server.SimpleHTTPRequestHandler):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, directory=directory, **kwargs)
+    with socketserver.TCPServer(("", port), Handler) as httpd:
+        print(f"Serving at port {port}")
+        httpd.serve_forever()

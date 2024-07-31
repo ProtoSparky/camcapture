@@ -56,7 +56,7 @@ def eval2():
             print(str(current_id))
     ids = question("Select one of the ids: ", False)
     if(ids in tmp_camera_ids):
-        return ids
+        return int(ids)
     else:
         eval2()
 

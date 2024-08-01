@@ -1,5 +1,7 @@
 #this script is supposed to set up the environment for the camera capture
 ##remember to install apt get v4l2-ctl
+#remember to install pip install opencv-python
+##and Pillow for PIL
 import pyassets.tools as tools
 import os
 import subprocess
@@ -27,10 +29,6 @@ def main():
     print("Data written to settings file")
     exit()
 
-
-
-
-
 def question(input_str, clear_term = True):
     if(clear_term):
         tools.Clear_Term()
@@ -51,6 +49,7 @@ def eval2():
     tools.Clear_Term()
     all_cameras = get_camera()
     cameras = all_cameras.keys()
+    print("If nothing shows up here, run as sudo!")
     print("Select one of the following ids")
     tmp_camera_ids = []
     for current_camera in cameras:
@@ -67,7 +66,7 @@ def eval2():
         eval2()
 
 def eval3():
-    update_freq = question("Enter constant frames pr hour: ") 
+    update_freq = question("Enter constant frames pr hour for history saving: ") 
     try:
        update_freq = float(update_freq)
        return update_freq
@@ -76,7 +75,7 @@ def eval3():
 
 
 def eval4():
-    update_freq = question("Enter burst fps ") 
+    update_freq = question("Enter preview stream fps ") 
     try:
        update_freq = float(update_freq)
        return update_freq

@@ -60,7 +60,7 @@ function spawninfo(){
     album_size.style.top = 0;
     album_size.style.height = 100;
     album_size.style.left = 0;
-    album_size.innerHTML = "History Size: " + client_data.stats.history_storage_size + " <br>Images in history: " + client_data.stats.history_size; 
+    album_size.innerHTML = "History Size: " + client_data.stats.history_storage_size + " <br>Images in history: " + (client_data.stats.history_size-1); 
     album_size.style.textWrap = "balance";
     infobox.appendChild(album_size);
 

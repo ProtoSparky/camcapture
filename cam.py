@@ -1,4 +1,5 @@
 #remember to install pip install opencv-python
+##and Pillow for PIL
 settings_dir = "./settings.json"
 static_img = "./assets/img/static.png"
 timelapse_dir = "./assets/img/history/"

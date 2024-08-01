@@ -1,13 +1,14 @@
 #remember to install pip install opencv-python
 settings_dir = "./settings.json"
 static_img = "./assets/img/static.png"
+timelapse_dir = "./assets/img/history/"
 
 import cv2
 import pyassets.tools as tools 
-import http.server  
-import socketserver
+import threading
 import time
 import atexit
+from datetime import datetime
 
 
 try:
@@ -36,4 +37,36 @@ def continouscam(sleep_seconds):
             print("Failed to capture image")
         ##sleep for given amount
         time.sleep(sleep_seconds)
-continouscam(0.1)
+
+
+def get_formatted_date():
+    now = datetime.now()
+    formatted_date = now.strftime("%Y-%m-%d-%H-%M")
+    
+    return formatted_date
+
+def slow_capture(sleep_seconds):
+    while True:
+        ret, frame = cam.read()        
+        if ret:
+            cv2.imwrite(timelapse_dir + get_formatted_date() + ".png", frame)
+        else:
+            print("Failed to capture image")
+        time.sleep(sleep_seconds)
+
+def fps_to_sleep_time(fps):
+    if fps <= 0:
+        raise ValueError("FPS must be a positive number")    
+    return 1 / fps
+
+
+slow_thread = threading.Thread(target=slow_capture(3600/settings["constant_update_freq"]))
+fast_thread = threading.Thread(target=continouscam(fps_to_sleep_time(settings["burst_fps"])))
+
+
+slow_thread.start()
+fast_thread.start()
+
+
+slow_thread.join()
+fast_thread.join()

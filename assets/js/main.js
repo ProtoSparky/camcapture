@@ -23,8 +23,11 @@ function spawn_img(){
     image.id = "image";
     image.style.position = "absolute";
     image.style.left = "50%";
-    image.style.top = "0px";
+    image.style.top = "140px";
     console.log(client_data);
+    image.style.width = "600px";
+    image.style.height = "auto";
+    /*
     if(client_data.backend.rotate_frame == 90 ){
         console.info("image scaling set to vertical");
         image.style.width  ="auto";
@@ -34,7 +37,7 @@ function spawn_img(){
         console.info("image scaling set to horisontal");
         image.style.width  ="auto";
         image.style.height = "100%";
-    }
+    }*/
     image.style.transform = "translate(-50%, 0) rotate("+client_data.backend.rotate_frame+"deg)";
     image.src  =`${"./assets/img/static.png"}?t=${new Date().getTime()}`;
     docroot.appendChild(image);
@@ -100,7 +103,6 @@ function refresh(){
             const image = document.getElementById("image");
             image.remove();
             spawn_img();
-            console.info("owo");
         }
     }, 1000);
 

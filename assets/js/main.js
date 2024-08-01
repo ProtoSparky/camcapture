@@ -18,8 +18,7 @@ function init(){
 
 }
 
-function spawn_img(){
-    
+function spawn_img(){    
     const image = document.createElement("img");
     image.id = "image";
     image.style.position = "absolute";
@@ -37,7 +36,6 @@ function spawn_img(){
         image.style.height = "100%";
     }
     image.style.transform = "translate(-50%, 0) rotate("+client_data.backend.rotate_frame+"deg)";
-    //image.src = "./assets/img/static.png";
     image.src  =`${"./assets/img/static.png"}?t=${new Date().getTime()}`;
     docroot.appendChild(image);
 }

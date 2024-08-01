@@ -10,6 +10,10 @@ def main():
     obj = {}
     eval1()
     obj["cam_id"] = eval2()
+    mode_and_res = eval7(obj["cam_id"])
+    obj["camera_mode"] = mode_and_res[0]
+    obj["camera_res_x"] = int(mode_and_res[1])
+    obj["camera_res_y"] = int(mode_and_res[2])
     obj["constant_update_freq"] = eval3()
     obj["burst_fps"] = eval4()
     obj["web_port"] = eval5()
@@ -93,6 +97,30 @@ def eval6():
     except:
         eval6()
 
+def eval7(id):
+    tools.Clear_Term()
+    camera_modes  = get_camera_display_modes(id)
+    for current_cam_mode in camera_modes:
+        print("\n---" + current_cam_mode + "---")
+        for current_res in camera_modes[current_cam_mode]:
+            print(current_res) 
+    print("\n")
+    try:
+        codec, res = question("Enter camera res and mode. Valid input is mode+res (MJPG 1920x1080)",clear_term = False).split(" ", 1)
+        if(res in camera_modes[codec]):
+            width, height = res.split("x")
+            return codec, width, height
+        else:
+            eval7(id)
+    except:
+        eval7(id)
+
+
+
+
+
+
+
         
     
 
@@ -115,7 +143,49 @@ def get_camera():
                 webcams[current_camera].append(int(match.group(1)))    
     webcams = {k: v for k, v in webcams.items() if v}    
     return webcams
+
+def get_camera_display_modes(camera_id):
+    try:
+        # Run the command to list formats for the specified camera
+        result = subprocess.run(['v4l2-ctl', '-d', '/dev/video'+str(camera_id),'--list-formats-ext'], capture_output=True, text=True)
+    except:
+        print("Failed to run v4l2-ctl', '--list-devices!. Have you installed v4l2-ctl?")
+        exit()
+    output = result.stdout
+
+    # Initialize the dictionary to store the parsed data
+    parsed_data = {
+        "MJPG": [],
+        "YUYV": []
+    }
+
+    # Regular expressions to match the format and resolutions
+    format_regex = r"\[(\d+)\]: '(\w+)'"
+    resolution_regex = r"Size: Discrete (\d+x\d+)"
+
+    current_format = None
+
+    # Iterate through the lines of the output
+    for line in output.split('\n'):
+        format_match = re.search(format_regex, line)
+        if format_match:
+            format_name = format_match.group(2)
+            if format_name == "MJPG":
+                current_format = "MJPG"
+            elif format_name == "YUYV":
+                current_format = "YUYV"
+        
+        resolution_match = re.search(resolution_regex, line)
+        if resolution_match and current_format:
+            resolution = resolution_match.group(1)
+            if resolution not in parsed_data[current_format]:
+                parsed_data[current_format].append(resolution)
+
+    return parsed_data
     
+
+    
+
 
 ##start code
 main()

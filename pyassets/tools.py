@@ -269,13 +269,6 @@ def launch_html_server(directory, port, verbose=True):
         httpd.serve_forever()
 
 def get_size_and_count(path):
-    """
-    Returns the size of a file or directory in human-readable format,
-    and the number of files if it's a directory.
-    
-    :param path: Path to the file or directory
-    :return: Tuple (size_string, file_count)
-    """
     total_size = 0
     file_count = 0
     

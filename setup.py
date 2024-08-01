@@ -13,6 +13,7 @@ def main():
     obj["constant_update_freq"] = eval3()
     obj["burst_fps"] = eval4()
     obj["web_port"] = eval5()
+    obj["rotate_frame"] = eval6()
 
     try:
         os.remove(settings_dir) #remove previous config
@@ -84,6 +85,14 @@ def eval5():
         return int(port_number)
     except:
         eval5()
+
+def eval6():
+    rotate_by = question("Rotate viewport by x degrees 0-360): ")
+    try:
+        return int(rotate_by)
+    except:
+        eval6()
+
         
     
 

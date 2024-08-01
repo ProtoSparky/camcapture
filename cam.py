@@ -45,7 +45,7 @@ def slow_capture(sleep_seconds):
         ret, frame = cam.read()        
         if ret:
             cv2.imwrite(timelapse_dir + get_formatted_date() + ".png", frame)
-            current_dir_size = tools.get_size("./assets/img/history/")
+            current_dir_size = tools.get_size_and_count("./assets/img/history/")
             current_storage = tools.open_json("./stats.json")
             current_storage["history_storage_size"] = current_dir_size[0]
             current_storage["history_size"] = current_dir_size[1]

@@ -33,7 +33,6 @@ def continouscam(sleep_seconds):
     while True:
         ret, frame = cam.read()
         if ret:
-            print("f")
             cv2.imwrite(static_img, frame)
         else:
             print("Failed to capture image")
@@ -44,7 +43,6 @@ def slow_capture(sleep_seconds):
     while True:
         ret, frame = cam.read()        
         if ret:
-            print("s")
             cv2.imwrite(timelapse_dir + get_formatted_date() + ".png", frame)
         else:
             print("Failed to capture image")
@@ -55,12 +53,15 @@ def fps_to_sleep_time(fps):
         raise ValueError("FPS must be a positive number")    
     return 1 / fps
 
+slow_capturefps = 3600/settings["constant_update_freq"]
+fast_capture = fps_to_sleep_time(settings["burst_fps"])
+slow_thread = threading.Thread(target=slow_capture, args=(slow_capturefps,))
+fast_thread = threading.Thread(target=continouscam, args=(fast_capture,))
 
-slow_thread = threading.Thread(target=slow_capture(3600/settings["constant_update_freq"]))
-fast_thread = threading.Thread(target=continouscam(fps_to_sleep_time(settings["burst_fps"])))
+slow_thread.start()
+fast_thread.start()
 
 slow_thread.join()
 fast_thread.join()
-slow_thread.start()
-fast_thread.start()
+
 

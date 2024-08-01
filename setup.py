@@ -12,6 +12,7 @@ def main():
     obj["cam_id"] = eval2()
     obj["constant_update_freq"] = eval3()
     obj["burst_fps"] = eval4()
+    obj["web_port"] = eval5()
 
     try:
         os.remove(settings_dir) #remove previous config
@@ -77,7 +78,12 @@ def eval4():
     except:
         eval4()
     
-
+def eval5():
+    port_number = question("Enter webserver port number: ")
+    try:
+        return int(port_number)
+    except:
+        eval5()
         
     
 

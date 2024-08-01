@@ -6,7 +6,6 @@ import cv2
 import pyassets.tools as tools 
 import http.server  
 import socketserver
-import threading
 import time
 import atexit
 
@@ -19,8 +18,8 @@ except:
 
 # Initialize the camera
 cam = cv2.VideoCapture(int(settings["cam_id"]))
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)  # Set width to 1280
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+
+
 
 def cleanup():
     print("Releasing cam")

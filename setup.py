@@ -128,7 +128,7 @@ def get_camera():
     try:
         result = subprocess.run(['v4l2-ctl', '--list-devices'], capture_output=True, text=True)
     except:
-        print("Failed to run v4l2-ctl', '--list-devices!. Have you installed v4l2-ctl?")
+        print("Failed to run v4l2-ctl', '--list-devices!. Have you installed v4l-utils?")
         
     lines = result.stdout.split('\n')    
     webcams = {}
@@ -149,7 +149,7 @@ def get_camera_display_modes(camera_id):
         # Run the command to list formats for the specified camera
         result = subprocess.run(['v4l2-ctl', '-d', '/dev/video'+str(camera_id),'--list-formats-ext'], capture_output=True, text=True)
     except:
-        print("Failed to run v4l2-ctl', '--list-devices!. Have you installed v4l2-ctl?")
+        print("Failed to run v4l2-ctl', '--list-devices!. Have you installed v4l-utils?")
         exit()
     output = result.stdout
 

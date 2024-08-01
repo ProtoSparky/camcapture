@@ -9,6 +9,7 @@ import threading
 import time
 import atexit
 from datetime import datetime
+import os
 
 try:
     settings = tools.open_json(settings_dir)
@@ -44,6 +45,11 @@ def slow_capture(sleep_seconds):
         ret, frame = cam.read()        
         if ret:
             cv2.imwrite(timelapse_dir + get_formatted_date() + ".png", frame)
+            current_dir_size = tools.get_size("./assets/img/history/")
+            current_storage = tools.open_json("./stats.json")
+            current_storage["history_storage_size"] = current_dir_size[0]
+            current_storage["history_size"] = current_dir_size[1]
+            tools.write_json("./stats.json", current_storage)
         else:
             print("Failed to capture image")
         time.sleep(sleep_seconds)

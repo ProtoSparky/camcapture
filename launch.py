@@ -6,7 +6,7 @@ def run_script(script_name):
 
 if __name__ == "__main__":
     # List of scripts to run
-    scripts =    ["./cam.py", "./webserver.py"]
+    scripts =        ["./cam.py", "./webserver.py"]
 
     # Create a process for each script
     processes = []

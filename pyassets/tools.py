@@ -267,3 +267,41 @@ def launch_html_server(directory, port, verbose=True):
         if verbose:
             print(f"Serving at port {port}")
         httpd.serve_forever()
+
+def get_size_and_count(path):
+    """
+    Returns the size of a file or directory in human-readable format,
+    and the number of files if it's a directory.
+    
+    :param path: Path to the file or directory
+    :return: Tuple (size_string, file_count)
+    """
+    total_size = 0
+    file_count = 0
+    
+    if os.path.isfile(path):
+        # If it's a file, get its size directly
+        total_size = os.path.getsize(path)
+        file_count = 1
+    elif os.path.isdir(path):
+        # If it's a directory, sum up sizes of all files and count them
+        for dirpath, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                filepath = os.path.join(dirpath, filename)
+                total_size += os.path.getsize(filepath)
+                file_count += 1
+    else:
+        return "Path does not exist or is not accessible", 0
+
+    # Convert to human-readable format
+    units = ['B', 'KB', 'MB', 'GB', 'TB']
+    size = float(total_size)
+    unit_index = 0
+    
+    while size >= 1024 and unit_index < len(units) - 1:
+        size /= 1024
+        unit_index += 1
+    
+    size_string = f"{size:.2f} {units[unit_index]}"
+    
+    return size_string, file_count

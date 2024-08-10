@@ -3,7 +3,7 @@
 settings_dir = "./settings.json"
 static_img = "./assets/img/static.png"
 timelapse_dir = "./assets/img/history/"
-
+max_retries = 10 #how many times the camera can fail to capture before it will be reinitialized
 import cv2
 import pyassets.tools as tools 
 import threading
@@ -12,6 +12,7 @@ import atexit
 from datetime import datetime
 import os
 from PIL import Image 
+import sys
 
 try:
     settings = tools.open_json(settings_dir)
@@ -35,7 +36,8 @@ def cleanup():
     cam.release()
 atexit.register(cleanup)
 
-def continouscam(sleep_seconds):
+def continouscam(sleep_seconds, max_retries):
+    current_retries = 0
     print("capturing fast")
     while True:
         ret, frame = cam.read()
@@ -43,10 +45,16 @@ def continouscam(sleep_seconds):
             cv2.imwrite(static_img, frame)
         else:
             print("Failed to capture image")
+            if(current_retries > max_retries):
+                print("killing cam and reinitializing")
+                exit(42069)
+            else:
+                current_retries += 1
         ##sleep for given amount
         time.sleep(sleep_seconds)
 
-def slow_capture(sleep_seconds):
+def slow_capture(sleep_seconds, max_retries):
+    current_retries = 0
     while True:
         ret, frame = cam.read()        
         if ret:
@@ -60,6 +68,12 @@ def slow_capture(sleep_seconds):
             tools.write_json("./stats.json", current_storage)
         else:
             print("Failed to capture image")
+            if(current_retries > max_retries):
+                print("killing cam and reinitializing")
+                exit(42069)
+            else:
+                current_retries += 1
+
         time.sleep(sleep_seconds)
 
 def fps_to_sleep_time(fps):
@@ -69,8 +83,8 @@ def fps_to_sleep_time(fps):
 
 slow_capturefps = 3600/settings["constant_update_freq"]
 fast_capture = fps_to_sleep_time(settings["burst_fps"])
-slow_thread = threading.Thread(target=slow_capture, args=(slow_capturefps,))
-fast_thread = threading.Thread(target=continouscam, args=(fast_capture,))
+slow_thread = threading.Thread(target=slow_capture, args=(slow_capturefps,max_retries,))
+fast_thread = threading.Thread(target=continouscam, args=(fast_capture,max_retries,))
 slow_thread.start()
 fast_thread.start()
 slow_thread.join()

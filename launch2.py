@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 import multiprocessing
 import subprocess
+import os
 
 def run_script(script_name):
-    subprocess.run(["python3", script_name])
+    while True:
+        result = subprocess.run(["python3", script_name])
+        if result.returncode == 42069:
+            print(f"{script_name} exited with code 42069. Restarting...")
+        else:
+            break
 
 if __name__ == "__main__":
     # List of scripts to run

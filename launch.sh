@@ -36,12 +36,22 @@ setup(){
     sudo python3 ./setup.py
 }
 
+install_dependencies+setup(){
+    apt update
+    apt install v4l-utils
+    apt install python3-pip
+    pip install opencv-python
+    pip install pillow
+    setup
+}
+
 while true; do
     echo "Choose an option:"
     echo "1) Launch CamCapture"
     echo "2) Kill/stop CamCapture"
     echo "3) Setup CamCapture"
-    echo "4) Exit"
+    echo "4) Install dependencies and setup"
+    echo "5) Exit"
     read -p "Enter your choice: " choice
 
     case $choice in
@@ -57,6 +67,10 @@ while true; do
             setup
             ;;
         4)
+            install_dependencies+setup
+            ;;
+
+        5)
             echo "Exiting"
             exit 0
             ;;

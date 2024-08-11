@@ -1,5 +1,5 @@
 #this script is supposed to set up the environment for the camera capture
-##remember to install apt get v4l2-ctl
+##remember to install apt get v4l-utils
 #remember to install pip install opencv-python
 ##and Pillow for PIL
 import pyassets.tools as tools

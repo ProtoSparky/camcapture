@@ -5,7 +5,7 @@ These python scripts will help you display a webcam feed on a webserver, save fe
 To get started, install the dependencies, and run ```./launch.sh```
 
 ### Dependencies
-* v4l2-ctl (can be installed with sudo apt install v4l2-ctl)
+* v4l2-ctl (can be installed with sudo apt install v4l-utils)
 * opencv-python (installed with pip install opencv-python)
 * Pillow (-||-)
 

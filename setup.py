@@ -10,16 +10,18 @@ settings_dir = "./settings.json"
 
 def main(): 
     obj = {}
-    eval1()
-    obj["cam_id"] = eval2()
-    mode_and_res = eval7(obj["cam_id"])
+    eval1() #start setup
+    cam_id = eval2()
+    obj["cam_id"] = cam_id[0] #get camera id
+    obj["cam_name"] = cam_id[1]
+    mode_and_res = eval7(obj["cam_id"]) #get mode and resolution for cam
     obj["camera_mode"] = mode_and_res[0]
     obj["camera_res_x"] = int(mode_and_res[1])
     obj["camera_res_y"] = int(mode_and_res[2])
-    obj["constant_update_freq"] = eval3()
-    obj["burst_fps"] = eval4()
-    obj["web_port"] = eval5()
-    obj["rotate_frame"] = eval6()
+    obj["constant_update_freq"] = eval3() #get frames per hour
+    obj["burst_fps"] = eval4() # get frames per second
+    obj["web_port"] = eval5() #webserver port number
+    obj["rotate_frame"] = eval6() #rotate web preview image
 
     try:
         os.remove(settings_dir) #remove previous config
@@ -28,6 +30,7 @@ def main():
     tools.write_json(settings_dir, obj)
     print("Data written to settings file")
     exit()
+
 
 def question(input_str, clear_term = True):
     if(clear_term):
@@ -52,16 +55,18 @@ def eval2():
     print("If nothing shows up here, run as sudo!")
     print("Select one of the following ids")
     tmp_camera_ids = []
+    cam_name_object = {}
     for current_camera in cameras:
         print("\n------" + current_camera + "------")
         print("ids: ")
         current_cam_obj = all_cameras[current_camera]
         for current_id in current_cam_obj:
+            cam_name_object[current_id] = current_camera
             tmp_camera_ids.append(str(current_id))
             print(str(current_id))
     ids = question("Select one of the ids: ", False)
     if(ids in tmp_camera_ids):
-        return int(ids)
+        return int(ids), cam_name_object[int(ids)]
     else:
         eval2()
 
@@ -112,15 +117,7 @@ def eval7(id):
         else:
             eval7(id)
     except:
-        eval7(id)
-
-
-
-
-
-
-
-        
+        eval7(id)       
     
 
 def get_camera():
@@ -180,10 +177,7 @@ def get_camera_display_modes(camera_id):
             if resolution not in parsed_data[current_format]:
                 parsed_data[current_format].append(resolution)
 
-    return parsed_data
-    
-
-    
+    return parsed_data  
 
 
 ##start code

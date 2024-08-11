@@ -152,17 +152,14 @@ def slow_capture(sleep_seconds, max_retries, sleep_seconds_fast):
     while Run:
         ret, frame = cam.read()        
         if ret:
-            if(frame_counter > capture_frame):
-                #reset counter and capture frame for storage
-                frame_counter = 0
-                formatted_date = get_formatted_date()
-                cv2.imwrite(timelapse_dir + formatted_date + ".png", frame)
-                current_dir_size = tools.get_size_and_count("./assets/img/history/")
-                current_storage = tools.open_json("./stats.json")
-                current_storage["history_storage_size"] = current_dir_size[0]
-                current_storage["history_size"] = current_dir_size[1]
-                current_storage["last_slow_capture"] = formatted_date
-                tools.write_json("./stats.json", current_storage)
+            formatted_date = get_formatted_date()
+            cv2.imwrite(timelapse_dir + formatted_date + ".png", frame)
+            current_dir_size = tools.get_size_and_count("./assets/img/history/")
+            current_storage = {}
+            current_storage["history_storage_size"] = current_dir_size[0]
+            current_storage["history_size"] = current_dir_size[1]
+            current_storage["last_slow_capture"] = formatted_date
+            tools.write_json("./stats.json", current_storage)
         else:
             print("Failed to capture slow image")
             if(current_retries > max_retries):

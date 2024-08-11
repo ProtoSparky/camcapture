@@ -1,10 +1,18 @@
 {
+<<<<<<< Updated upstream
     "cam_id": 4,
     "cam_name": "GENERAL WEBCAM",
     "camera_mode": "MJPG",
     "camera_res_x": 1280,
     "camera_res_y": 720,
     "constant_update_freq": 1200.0,
+=======
+    "cam_id": 2,
+    "camera_mode": "MJPG",
+    "camera_res_x": 1280,
+    "camera_res_y": 720,
+    "constant_update_freq": 4.0,
+>>>>>>> Stashed changes
     "burst_fps": 2.0,
     "web_port": 4200,
     "rotate_frame": 0

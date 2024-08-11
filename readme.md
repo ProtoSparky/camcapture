@@ -24,3 +24,6 @@ There are primarily 2 ways you can do i. For testing i recommend you run it usin
 * Running it normally ```sudo python3 ./launch.py```
 * Running it in background with ```sudo nohup python3 ./launch.py &```
 
+## How 2 kill Launch.py? 
+* Run ```ps aux | grep python3```, find all mentions of launch.py, cam.py, etc and kill them with their respected PID
+

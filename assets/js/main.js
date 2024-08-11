@@ -2,6 +2,7 @@ var client_data = {
     "stats":null,
     "backend":null
 };
+var img_stacker = 0; 
 var docroot = null;
 function init(){
     const client_settings = {
@@ -20,27 +21,30 @@ function init(){
 
 function spawn_img(){    
     const image = document.createElement("img");
-    image.id = "image";
+    image.id = "image0";
     image.style.position = "absolute";
     image.style.left = "50%";
     image.style.top = "140px";
-    console.log(client_data);
     image.style.width = "600px";
     image.style.height = "auto";
-    /*
-    if(client_data.backend.rotate_frame == 90 ){
-        console.info("image scaling set to vertical");
-        image.style.width  ="auto";
-        image.style.height = "auto";
-    }
-    else{
-        console.info("image scaling set to horisontal");
-        image.style.width  ="auto";
-        image.style.height = "100%";
-    }*/
+    image.style.backgroundColor = AccessCSSVar("--col_bg_content");
+    image.style.zIndex = 0; 
     image.style.transform = "translate(-50%, 0) rotate("+client_data.backend.rotate_frame+"deg)";
     image.src  =`${"./assets/img/static.png"}?t=${new Date().getTime()}`;
     docroot.appendChild(image);
+    /*
+    const image1 = document.createElement("img");
+    image1.id = "image1";
+    image1.style.position = "absolute";
+    image1.style.left = "50%";
+    image1.style.top = "140px";
+    image1.style.width = "600px";
+    image1.style.height = "auto";
+    image1.style.zIndex = 0; 
+    image1.style.backgroundColor = AccessCSSVar("--col_bg_content");
+    image1.style.transform = "translate(-50%, 0) rotate("+client_data.backend.rotate_frame+"deg)";
+    image1.src  =`${"./assets/img/static.png"}?t=${new Date().getTime()}`;
+    docroot.appendChild(image1);*/
 }
 
 function spawninfo(){
@@ -100,10 +104,27 @@ function set_refresh(){
 function refresh(){
     setInterval(function() {
         if(localStorage.getItem("refresh") == "true"){            
-            const image = document.getElementById("image");
-            image.remove();
-            spawn_img();
+            refresh_img();
         }
     }, 1000);
 
 };
+
+function refresh_img(){
+    const img = document.getElementById("image"+0);
+    img.src = `${"./assets/img/static.png"}?t=${new Date().getTime()}`;     
+    /*
+    if(img_stacker>1){
+        img_stacker = 0;
+    }
+    const past_image = document.getElementById("image"+ num_invert(img_stacker));
+    past_image.style.zIndex = 0;
+    past_image.src  =`${"./assets/img/static.png"}?t=${new Date().getTime()}`;
+    const current_image = document.getElementById("image"+img_stacker);
+    current_image.src  =`${"./assets/img/static.png"}?t=${new Date().getTime()}`;
+    current_image.style.zIndex = 999;
+    img_stacker ++; */
+}
+function num_invert(num){
+    return num === 0 ? 1 : 0;
+}

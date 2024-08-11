@@ -4,7 +4,7 @@
     "camera_mode": "MJPG",
     "camera_res_x": 1280,
     "camera_res_y": 720,
-    "constant_update_freq": 2.0,
+    "constant_update_freq": 1200.0,
     "burst_fps": 2.0,
     "web_port": 4200,
     "rotate_frame": 0

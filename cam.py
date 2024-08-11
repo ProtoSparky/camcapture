@@ -13,8 +13,8 @@ from datetime import datetime
 from PIL import Image 
 import subprocess
 import re
-
 try:
+    print("loading settings file")
     settings = tools.open_json(settings_dir)
 except:
     print("Settings file missing! Run setup.py")
@@ -126,7 +126,8 @@ atexit.register(cleanup)
 def continouscam(sleep_seconds, max_retries):
     current_retries = 0
     print("capturing fast")
-    while True:
+    Run = True
+    while Run:
         ret, frame = cam.read()
         if ret:
             cv2.imwrite(static_img, frame)
@@ -134,34 +135,47 @@ def continouscam(sleep_seconds, max_retries):
             print("Failed to capture image")
             if(current_retries > max_retries):
                 print("killing cam and reinitializing")
-                exit()
+                Run = False
+                break
             else:
                 current_retries += 1
         ##sleep for given amount
         time.sleep(sleep_seconds)
+    print("uwu_fast")
+    exit()
 
-def slow_capture(sleep_seconds, max_retries):
+def slow_capture(sleep_seconds, max_retries, sleep_seconds_fast):
     current_retries = 0
-    while True:
+    frame_counter = 0
+    capture_frame = sleep_seconds/sleep_seconds_fast
+    Run = True
+    while Run:
         ret, frame = cam.read()        
         if ret:
-            formatted_date = get_formatted_date()
-            cv2.imwrite(timelapse_dir + formatted_date + ".png", frame)
-            current_dir_size = tools.get_size_and_count("./assets/img/history/")
-            current_storage = tools.open_json("./stats.json")
-            current_storage["history_storage_size"] = current_dir_size[0]
-            current_storage["history_size"] = current_dir_size[1]
-            current_storage["last_slow_capture"] = formatted_date
-            tools.write_json("./stats.json", current_storage)
+            if(frame_counter > capture_frame):
+                #reset counter and capture frame for storage
+                frame_counter = 0
+                formatted_date = get_formatted_date()
+                cv2.imwrite(timelapse_dir + formatted_date + ".png", frame)
+                current_dir_size = tools.get_size_and_count("./assets/img/history/")
+                current_storage = tools.open_json("./stats.json")
+                current_storage["history_storage_size"] = current_dir_size[0]
+                current_storage["history_size"] = current_dir_size[1]
+                current_storage["last_slow_capture"] = formatted_date
+                tools.write_json("./stats.json", current_storage)
         else:
-            print("Failed to capture image")
+            print("Failed to capture slow image")
             if(current_retries > max_retries):
                 print("killing cam and reinitializing")
-                exit()
+                Run = False
+                break
             else:
                 current_retries += 1
+        frame_counter += 1
+        time.sleep(sleep_seconds_fast)
+    print("uwu_slow")
+    exit()
 
-        time.sleep(sleep_seconds)
 
 def fps_to_sleep_time(fps):
     if fps <= 0:
@@ -170,7 +184,7 @@ def fps_to_sleep_time(fps):
 
 slow_capturefps = 3600/settings["constant_update_freq"]
 fast_capture = fps_to_sleep_time(settings["burst_fps"])
-slow_thread = threading.Thread(target=slow_capture, args=(slow_capturefps,max_retries,))
+slow_thread = threading.Thread(target=slow_capture, args=(slow_capturefps,max_retries,fast_capture, ))
 fast_thread = threading.Thread(target=continouscam, args=(fast_capture,max_retries,))
 slow_thread.start()
 fast_thread.start()

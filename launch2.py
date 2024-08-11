@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 import multiprocessing
 import subprocess
-import os
+import time
 
-def run_script(script_name):
+def runner(script_name):
     while True:
-        result = subprocess.run(["python3", script_name])
-        if result.returncode == 42069:
-            print(f"{script_name} exited with code 42069. Restarting...")
-        else:
-            break
+        print(f"Starting {script_name}")
+        process = subprocess.run(["python3", script_name])
+        print(f"{script_name} exited with return code {process.returncode}")
+        if script_name == "./cam.py":
+            print(f"Restarting {script_name}...")
+            time.sleep(1)
 
 if __name__ == "__main__":
     # List of scripts to run
@@ -18,7 +19,7 @@ if __name__ == "__main__":
     # Create a process for each script
     processes = []
     for script in scripts:
-        process = multiprocessing.Process(target=run_script, args=(script,))
+        process = multiprocessing.Process(target=runner, args=(script,))
         processes.append(process)
         process.start()
 
